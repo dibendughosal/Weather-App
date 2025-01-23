@@ -1,4 +1,7 @@
-
+.active{
+    opacity: 1;
+    scale: 1;
+}
 
 .tab.current-tab{
     background-color: rgba(219, 226, 239, 0.5);
