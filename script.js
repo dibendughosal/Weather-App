@@ -67,7 +67,7 @@ async function fetchUserWeatherInfo(coordinates) {
         loadingScreen.classList.remove('active')
     }
 }
-
+// rendering the content on the webp
 function renderWeatherInfo(weatherInfo){
     // Fetch the Element
     const cityName = document.querySelector('[data-cityName]');
@@ -79,5 +79,56 @@ function renderWeatherInfo(weatherInfo){
     const humidity = document.querySelector('[data-humidity]');
     const cloudiness = document.querySelector('[data-cloudiness]')
 
+    cityName.innerText = weatherInfo?.name;
+    countryIcon.src = `https://flagcdn.com/144x108/${weatherInfo?.sys?.country.toLowerCase()}.png`;
+    weatherDesc.innerText = weatherInfo?.weather?.[0]?.description;
+    weatherIcon.src = `https://openweathermap.org/img/w/${weatherInfo?.weather?.[0]?.icon}.png`;
+    temp.innerText = weatherInfo?.main?.temp;
+    windspeed.innerText = weatherInfo?.wind?.speed;
+    humidity.innerText = weatherInfo?.main?.humidity;
+    cloudiness.innerText = weatherInfo?.clouds?.all;
+}
+
+function getLocation(){
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition)
+    }
+}
+function showPosition(){
+    const userCoordinates = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+    }
+    sessionStorage.setItem("user-coordinates",JSON.stringify(userCoordinates));
+    fetchUserWeatherInfo(userCoordinates);
+}
+const grantAccessBtn = document.querySelector(['data-grantAccess']);
+grantAccessBtn.addEventListener('click', getLocation);
+
+const searchInput = document.querySelector('[data-searchInput]');
+searchForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let cityName = searchInput.value;
+
+    if(cityName === "")
+        return;
+    else
+        fetchUserWeatherInfo(cityName);
+})
+
+async function fetchUserWeatherInfo(city){
+    loadingScreen.classList.add('active');
+    userInfoContainer.classList.remove('active');
+    grantLocationCotainer.classList.remove('active');
     
+    try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&uniits=metric`);
+        const data = await response.json();
+        loadingScreen.classList.remove('active');
+        userInfoContainer.classList.add('active');
+        renderWeatherInfo(data);
+    } catch (error) {
+        console.log("Error Found", error);
+        
+    }
 }
