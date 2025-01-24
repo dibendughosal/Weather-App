@@ -5,7 +5,11 @@ const grantLocationContainer = document.querySelector('.grantLocation-Container'
 const searchForm = document.querySelector('[data-searchForm]');
 const loadingScreen = document.querySelector('.loading-Container');
 const userInfoContainer = document.querySelector('.user-info-container');
-
+const apiErrorContainer = document.querySelector(".api-error-container");
+const apiErrorImg = document.querySelector("[data-notFoundImg]");
+const apiErrorMessage = document.querySelector("[data-apiErrorText]");
+const apiErrorBtn = document.querySelector("[data-apiErrorBtn]");
+const messageText = document.querySelector("[data-messageText]");
 
 let currentTab = userTab;
 let API_KEY = 'eafe3cf2bf49511c600613013d24b490';
@@ -13,6 +17,7 @@ currentTab.classList.add("current-tab");
 
 
 function switchTab(clickedTab){
+    apiErrorContainer.classList.remove("active");
     if(clickedTab != currentTab){
         currentTab.classList.remove('current-tab');
         currentTab = clickedTab;
@@ -48,6 +53,23 @@ function getfromSessionStorage(){
         fetchUserWeatherInfo(coordinates);
     }
 }
+
+function showError(error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        messageText.innerText = "You denied the request for Geolocation.";
+        break;
+      case error.POSITION_UNAVAILABLE:
+        messageText.innerText = "Location information is unavailable.";
+        break;
+      case error.TIMEOUT:
+        messageText.innerText = "The request to get user location timed out.";
+        break;
+      case error.UNKNOWN_ERROR:
+        messageText.innerText = "An unknown error occurred.";
+        break;
+    }
+  }
 
 async function fetchUserWeatherInfo(coordinates) {
     const {lat, lon} = coordinates;
@@ -124,15 +146,22 @@ async function fetchUserWeatherCity(city){
     loadingScreen.classList.add('active');
     userInfoContainer.classList.remove('active');
     grantLocationContainer.classList.remove('active');
-    
+    apiErrorContainer.classList.remove("active");
     try {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`);
         const data = await response.json();
+        if (!data.sys) {
+            throw data;
+          }
         loadingScreen.classList.remove('active');
         userInfoContainer.classList.add('active');
         renderWeatherInfo(data);
     } catch (error) {
-        console.log("Error Found", error);
+        // console.log("Error Found", error);
+        loadingScreen.classList.remove("active");
+        apiErrorContainer.classList.add("active");
+        apiErrorMessage.innerText = `${error?.message}`;
+        apiErrorBtn.style.display = "none"; 
         
     }
 }
