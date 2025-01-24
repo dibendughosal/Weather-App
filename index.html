@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Weather App | Dibendu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./images/techwolf-logo-removebg.png">
 </head>
 <body>
     <div class="wrapper">
@@ -15,29 +20,29 @@
         </div>
         <div class="weather-container">
             <!-- Grant Location -->
-             <div class="grantLocation-Container">
+             <div class="sub-container grantLocation-Container">
                 <img src="./images/location.png" height="80px" width="80px" loading="lazy">
-                <h2>grant Location Access</h2>
+                <h2>Grant Location Access</h2>
                 <p>Allow Access To Get Weather Information</p>
                 <button class="btn" data-grantAccess>GRANT ACCESS</button>
              </div>
 
              <!-- Search Weather Section -->
-              <form class="searchWeather-Container" data-searchForm>
+              <form class="searchWeather-Container" data-searchForm> 
                 <input type="text" placeholder="Search for city..." data-searchInput >
-                <button>
+                <button class="btn" type="submit">
                     <img src="./images/search.png" width="20px" height="20px" loading="lazy">
                 </button>
               </form>
 
               <!-- Loading Screen Section -->
-               <div class="loading-Container">
+               <div class="sub-container loading-Container">
                 <img src="./images/loading.gif" width="150px" height="150px" loading="lazy">
                 <p>Loading</p>
                </div>
 
                <!-- Show Weather Information -->
-                <div class="user-info-container">
+                <div class="sub-container user-info-container">
                     <!-- city Name -->
                     <div class="name">
                         <p data-cityName></p>
